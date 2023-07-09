@@ -53,7 +53,7 @@ INSERT INTO Artists(name)
 
 
 INSERT INTO Jenres(name)
-	VALUES('Rock'), ('Techno'), ('Rap'), ('Hip-Hop'), ('Chillhouse');
+	VALUES('Rock'), ('Techno'), ('Rap'), ('Hip-Hop'), ('Chillhouse'), ('Metal');
 
 
 INSERT INTO Albums(name, year)
@@ -76,7 +76,7 @@ INSERT INTO collections(name, year)
 
 INSERT INTO jenreartist
 	VALUES(1, 1), (2, 2), (3, 3), (4, 1), 
-	(5, 4), (6, 3), (7, 5), (8, 2);
+	(5, 4), (6, 3), (7, 5), (8, 2), (1, 6);
 
 INSERT INTO albumartist
 	VALUES(1, 1), (2, 5), (3, 3), (4, 2), (5, 4), (6, 8), (7, 7), (8, 6), (1, 9), (2, 9);
@@ -109,10 +109,14 @@ JOIN albums a ON t.album_id = a.id
 GROUP BY a.name;
 
 -- Все исполнители, которые не выпустили альбомы в 2020 году.
-SELECT DISTINCT a.name FROM artists a 
-LEFT JOIN albumartist aa ON a.id = aa.artist_id
-LEFT JOIN albums al ON aa.album_id = al.id
-WHERE al.year <> 2020 OR al.year IS NULL;
+SELECT a.name FROM artists a
+WHERE a.name NOT IN (
+    SELECT a.name
+    FROM artists a
+    JOIN albumartist aa ON a.id = aa.artist_id
+    JOIN albums al ON aa.album_id = al.id
+    WHERE al.year = 2020
+);
 
 -- Названия сборников, в которых присутствует конкретный исполнитель (Prodigy).
 SELECT c.name FROM collections c
@@ -128,7 +132,7 @@ SELECT a.name FROM albums a
 JOIN albumartist aa ON a.id = aa.album_id
 JOIN artists ar ON aa.artist_id = ar.id
 JOIN jenreartist j ON ar.id = j.artist_id
-GROUP BY a.id, a.name
+GROUP BY ar.id, a.name
 HAVING COUNT(DISTINCT j.jenre_id) > 1;
 
 -- Наименования треков, которые не входят в сборники.
@@ -144,12 +148,16 @@ JOIN tracks t ON a.id = t.album_id
 WHERE t.duration = (SELECT MIN(duration) FROM tracks);
 
 --Названия альбомов, содержащих наименьшее количество треков.
-SELECT a.name FROM albums a 
-JOIN tracks t ON a.id = t.album_id 
-GROUP BY a.id, a.name 
-ORDER BY COUNT(t.id)
-LIMIT 1;
-
+SELECT a.name FROM albums a
+JOIN tracks t ON a.id = t.album_id
+GROUP BY a.id, a.name
+HAVING COUNT(t.id) = (
+    SELECT COUNT(t2.id) FROM albums a2
+    JOIN tracks t2 ON a2.id = t2.album_id
+    GROUP BY a2.id
+    ORDER BY COUNT(t2.id)
+    LIMIT 1
+);
 
 
 

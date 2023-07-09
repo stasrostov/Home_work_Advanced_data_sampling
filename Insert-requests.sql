@@ -5,7 +5,7 @@ INSERT INTO Artists(name)
 
 
 INSERT INTO Jenres(name)
-	VALUES('Rock'), ('Techno'), ('Rap'), ('Hip-Hop'), ('Chillhouse');
+	VALUES('Rock'), ('Techno'), ('Rap'), ('Hip-Hop'), ('Chillhouse'), ('Metal');
 
 
 INSERT INTO Albums(name, year)
@@ -28,7 +28,7 @@ INSERT INTO collections(name, year)
 
 INSERT INTO jenreartist
 	VALUES(1, 1), (2, 2), (3, 3), (4, 1), 
-	(5, 4), (6, 3), (7, 5), (8, 2);
+	(5, 4), (6, 3), (7, 5), (8, 2), (1, 6);
 
 INSERT INTO albumartist
 	VALUES(1, 1), (2, 5), (3, 3), (4, 2), (5, 4), (6, 8), (7, 7), (8, 6), (1, 9), (2, 9);
@@ -39,5 +39,3 @@ INSERT INTO collectiontrack
 	(3, 5), (3, 6), (4, 7), (4, 8), 
 	(5, 9), (5, 10), (6, 11), (6, 12), 
 	(7, 13), (7, 14), (8, 15), (8, 16);
-
-
